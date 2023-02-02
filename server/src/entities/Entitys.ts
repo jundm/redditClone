@@ -3,13 +3,12 @@ import {BaseEntity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn} 
 export default abstract class Entity extends BaseEntity {
     // Entity의 기본 키 열 설정
     @PrimaryGeneratedColumn()
-    // TODO id! 일단 이렇게 처리했는데 이렇게 처리되도 되는지 확인해야할 것
-    id!: number;
+    id: number;
 
     @CreateDateColumn()
-    createdAt!: Date;
+    createdAt: Date;
 
     @UpdateDateColumn()
-    updatedAt!: Date;
+    updatedAt: Date;
 
 }

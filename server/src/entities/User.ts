@@ -2,6 +2,7 @@ import {Entity, Column, Index, OneToMany, BeforeInsert} from "typeorm";
 import {IsEmail, Length} from "class-validator";
 import bcrypt from "bcryptjs";
 import BaseEntity from './Entity'
+import Post from "./Post";
 
 
 // user 클래스가 entitiy임을 나타냄
@@ -23,7 +24,7 @@ export default class User extends BaseEntity{
     password: string;
 
     @OneToMany(() => Post, (post) => post.user)
-    post: Post[];
+    posts: Post[];
 
     @OneToMany(() => Vote, (vote) => vote.user)
 

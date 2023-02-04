@@ -18,7 +18,7 @@ app.listen(PORT, async () => {
     ###########################################
     `);
     AppDataSource.initialize().then(async () => {
-        console.log("database initialized!")
-    }).catch(error => console.log(error))
+        console.log("database initialized!");
+    }).catch(error => console.log(error));
 
 });

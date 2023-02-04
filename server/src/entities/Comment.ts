@@ -1,10 +1,10 @@
 import {BeforeInsert, Column, Entity, Index, JoinColumn, ManyToOne, OneToMany} from "typeorm";
 import {Exclude, Expose} from "class-transformer";
+import {makeId} from "../utils/helpers";
 import BaseEntity from "@entities/Entity";
 import User from "@entities/User";
 import Post from "@entities/Post";
 import Vote from "@entities/Vote";
-import {makeId} from "@utils/helpers";
 
 
 @Entity("comments")

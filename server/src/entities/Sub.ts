@@ -1,7 +1,8 @@
 import {Column, Entity, Index, JoinColumn, ManyToOne, OneToMany} from "typeorm";
-import BaseEntity from './Entity';
-import User from "./User";
 import {Expose} from "class-transformer";
+import BaseEntity from '@entities/Entity';
+import User from "@entities/User";
+import Post from "@entities/Post";
 
 
 @Entity("subs")

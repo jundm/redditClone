@@ -16,12 +16,11 @@ const Register: NextPage = () => {
     const [error, setError] = useState({email: "", username: "", password: ""});
 
     const router = useRouter();
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        const res = axios.post('/auth/register', {
+        const res = await axios.post('/auth/register', {
             email, username, password
         });
-        console.log('res', res);
 
     };
     return (

@@ -2,7 +2,7 @@ import React from "react";
 import cls from 'classnames';
 
 interface InputGroupProps {
-    className: string;
+    className?: string;
     type?: string;
     placeholder?: string;
     value: string;

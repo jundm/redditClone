@@ -1,12 +1,14 @@
 import express from "express";
 import morgan from "morgan";
 import {AppDataSource} from "./data-source";
+import authRoutes from './routes/auth';
 
 const app = express();
 let PORT = 4000;
 
 app.use(express.json());
 app.use(morgan("dev"));
+app.use('/api/auth', authRoutes);
 
 app.get("/", (_, res) => res.send("running"));
 

@@ -1,7 +1,9 @@
 import type {NextPage} from 'next';
 import Link from "next/link";
-import React, {useState} from "react";
+import React, {FormEvent, useState} from "react";
 import InputGroup from "../components/InputGroup";
+import axios from "axios";
+import {useRouter} from "next/router";
 
 interface RegisterProps {
 
@@ -12,12 +14,22 @@ const Register: NextPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({email: "", username: "", password: ""});
+
+    const router = useRouter();
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        const res = axios.post('/auth/register', {
+            email, username, password
+        });
+        console.log('res', res);
+
+    };
     return (
         <div className="bg-white">
             <div className="flex flex-col items-center justify-center h-screen p-6">
                 <div className="w-10/12 mx-auto md:w-96">
                     <h1 className="mb-2 text-lg font-medium">회원가입</h1>
-                    <form action="">
+                    <form onSubmit={handleSubmit}>
                         <InputGroup
                             placeholder="Email"
                             value={email}

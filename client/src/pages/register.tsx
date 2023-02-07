@@ -1,8 +1,8 @@
 import type {NextPage} from 'next';
 import Link from "next/link";
+import axios from "axios";
 import React, {FormEvent, useState} from "react";
 import InputGroup from "../components/InputGroup";
-import axios from "axios";
 import {useRouter} from "next/router";
 
 interface RegisterProps {
@@ -13,14 +13,22 @@ const Register: NextPage = () => {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState({email: "", username: "", password: ""});
+    const [errors, setErrors] = useState({email: "", username: "", password: ""});
 
     const router = useRouter();
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        const res = await axios.post('/auth/register', {
-            email, username, password
-        });
+        try {
+
+            const res = await axios.post('/auth/register', {
+                email, username, password
+            });
+            console.log(res, 'res');
+            // await router.push('/login');
+        } catch (error: any) {
+            console.error(error, 'error');
+            setErrors(error.response.data || {});
+        }
 
     };
     return (
@@ -32,17 +40,17 @@ const Register: NextPage = () => {
                         <InputGroup
                             placeholder="Email"
                             value={email}
-                            error={error.email}
+                            error={errors.email}
                             setValue={setEmail}/>
                         <InputGroup
                             placeholder="Username"
                             value={username}
-                            error={error.username}
+                            error={errors.username}
                             setValue={setUsername}/>
                         <InputGroup
                             placeholder="Password"
                             value={password}
-                            error={error.password}
+                            error={errors.password}
                             setValue={setPassword}/>
                         <button
                             className="w-full py-2 mb-1 text-xs font-bold text-white uppercase bg-gray-400 border border-gray-400 rounded">

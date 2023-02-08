@@ -3,12 +3,17 @@ import morgan from "morgan";
 import {AppDataSource} from "./data-source";
 import authRoutes from './routes/auth';
 import cors from 'cors';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const app = express();
 let PORT = 4000;
 const origin = "http://localhost:3000";
 
-app.use(cors({origin}));
+app.use(cors({
+    origin,
+    credentials: true,
+}));
 
 app.use(express.json());
 app.use(morgan("dev"));

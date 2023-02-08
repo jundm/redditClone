@@ -1,9 +1,9 @@
+import React, {FormEvent, useState} from "react";
 import type {NextPage} from 'next';
+import {useRouter} from "next/router";
 import Link from "next/link";
 import axios from "axios";
-import React, {FormEvent, useState} from "react";
-import InputGroup from "../components/InputGroup";
-import {useRouter} from "next/router";
+import InputGroup from "@components/InputGroup";
 
 interface RegisterProps {
 

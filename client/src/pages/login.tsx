@@ -1,9 +1,10 @@
 import type {NextPage} from 'next';
 import React, {FormEvent, useState} from "react";
+import {useRouter} from "next/router";
 import Link from "next/link";
 import axios from "axios";
-import InputGroup from "../components/InputGroup";
-import {useRouter} from "next/router";
+import InputGroup from "@components/InputGroup";
+import {useAuthDispatch} from "@context/auth";
 
 interface LoginProps {
 
@@ -15,10 +16,13 @@ const Login: NextPage = () => {
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState<any>({});
 
+    const dispatch = useAuthDispatch();
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         try {
-            await axios.post("/auth/login", {password, username}, {withCredentials: true});
+            const res = await axios.post("/auth/login", {password, username}, {withCredentials: true});
+            dispatch("LOGIN", res.data?.user);
+            router.push('/');
         } catch (error: any) {
             console.error(error);
             setErrors(error.response.data || {});

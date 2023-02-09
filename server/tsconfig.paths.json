@@ -7,6 +7,12 @@
       ],
       "@utils/*": [
         "src/utils/*"
+      ],
+      "@data-source": [
+        "src/data-source.ts"
+      ],
+      "@routes/*": [
+        "src/routes/*"
       ]
     }
   }

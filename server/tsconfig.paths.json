@@ -13,6 +13,9 @@
       ],
       "@routes/*": [
         "src/routes/*"
+      ],
+      "@middlewares/*": [
+        "src/middlewares/*"
       ]
     }
   }

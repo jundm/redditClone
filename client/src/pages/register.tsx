@@ -4,6 +4,7 @@ import {useRouter} from "next/router";
 import Link from "next/link";
 import axios from "axios";
 import InputGroup from "@components/InputGroup";
+import {useAuthDispatch, useAuthState} from "@context/auth";
 
 interface RegisterProps {
 
@@ -14,8 +15,10 @@ const Register: NextPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({email: "", username: "", password: ""});
-
+    const {authenticated} = useAuthState();
     const router = useRouter();
+
+    if (authenticated) router.push('/');
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try {

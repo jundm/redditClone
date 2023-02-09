@@ -1,9 +1,11 @@
 import {Router, Request, Response} from 'express';
 import {isEmpty, validate} from "class-validator";
-import User from "@entities/User";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
+import User from "@entities/User";
+import userMiddleware from "@middlewares/user";
+import authMiddleware from "@middlewares/auth";
 
 
 interface errorsProps {
@@ -15,6 +17,10 @@ const mapError = (errors: any[]) => {
     return errors.reduce((prev: any, err: any) => {
         prev[err.property] = Object.entries(err.constraints)[0][1];
     }, {});
+};
+
+const me = async (_: Request, res: Response) => {
+    return res.json(res.locals.user);
 };
 
 const register = async (req: Request, res: Response) => {
@@ -82,6 +88,7 @@ const login = async (req: Request, res: Response) => {
 };
 
 const router = Router();
+router.get("/me", userMiddleware, authMiddleware, me);
 router.post("/register", register);
 router.post("/login", login);
 

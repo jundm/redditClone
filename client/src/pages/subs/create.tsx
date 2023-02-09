@@ -3,6 +3,7 @@ import InputGroup from "@components/InputGroup";
 import axios from "axios";
 import {router} from "next/client";
 import {useRouter} from "next/router";
+import {GetServerSideProps} from "next";
 
 interface SubCreateProps {
 
@@ -74,3 +75,18 @@ const SubCreate = () => {
 };
 
 export default SubCreate;
+
+// @ts-ignore
+export const getServerSideProps = async ({req, res}) => {
+    try {
+        const cookie = req.headers.cookie;
+        //쿠키가 없다면 에러를 보내기
+        if (!cookie) throw new Error("Missing auth token cookie");
+        // 쿠키가 있다면 그 쿠키를 이용해서 백엔드에서 인증 처리하기
+        await axios.get("/auth/me", {headers: {cookie}});
+        return {props: {}};
+    } catch (error) {
+        res.writeHead(307,{Location:"/login"}).end()
+    }
+
+};

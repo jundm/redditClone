@@ -1,4 +1,5 @@
 import cors from 'cors';
+import cookieParser from "cookie-parser";
 import dotenv from 'dotenv';
 import express from "express";
 import morgan from "morgan";
@@ -18,6 +19,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/subs', subRoutes);
 

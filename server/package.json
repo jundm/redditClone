@@ -28,6 +28,7 @@
       "nodemon": "^2.0.20",
       "pg": "^8.4.0",
       "reflect-metadata": "^0.1.13",
+      "swr": "^2.0.3",
       "tsconfig-paths": "^4.1.2"
    },
    "devDependencies": {

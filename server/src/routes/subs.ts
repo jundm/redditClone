@@ -7,8 +7,17 @@ import {AppDataSource} from "@data-source";
 import User from "@entities/User";
 import Post from "@entities/Post";
 
-const createSubs = async (req: Request, res: Response, next:any) => {
-    const { name, title, description } = req.body;
+const getSub = async (req: Request, res: Response) => {
+    const name = req.params.name;
+    try {
+        const sub = await Sub.findOneByOrFail({name});
+        return res.json(sub);
+    } catch (error) {
+        return res.status(404).json({error:"커뮤니티를 찾을 수 없습니다."})
+    }
+};
+const createSubs = async (req: Request, res: Response, next: any) => {
+    const {name, title, description} = req.body;
 
     try {
         let errors: any = {};
@@ -17,7 +26,7 @@ const createSubs = async (req: Request, res: Response, next:any) => {
 
         const sub = await AppDataSource.getRepository(Sub)
             .createQueryBuilder("sub")
-            .where("lower(sub.name) = :name", { name: name.toLowerCase() })
+            .where("lower(sub.name) = :name", {name: name.toLowerCase()})
             .getOne();
 
         if (sub) errors.name = "서브가 이미 존재합니다.";
@@ -26,7 +35,7 @@ const createSubs = async (req: Request, res: Response, next:any) => {
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: "문제가 발생했습니다." });
+        return res.status(500).json({error: "문제가 발생했습니다."});
     }
 
     try {
@@ -42,7 +51,7 @@ const createSubs = async (req: Request, res: Response, next:any) => {
         return res.json(sub);
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: "문제가 발생했습니다." });
+        return res.status(500).json({error: "문제가 발생했습니다."});
     }
 };
 
@@ -62,12 +71,13 @@ const topSubs = async (req: Request, res: Response) => {
         return res.json(subs);
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: "문제가 발생했습니다." });
+        return res.status(500).json({error: "문제가 발생했습니다."});
     }
 };
 
 const router = Router();
 
+router.get("/:name", userMiddleware, getSub);
 router.post("/", userMiddleware, authMiddleware, createSubs);
 router.get("/sub/topSubs", topSubs);
 

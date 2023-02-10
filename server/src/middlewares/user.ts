@@ -5,7 +5,6 @@ import User from "@entities/User";
 export default async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.cookies.token;
-        console.log(token,'token');
         if (!token) return next();
 
         // @ts-ignore

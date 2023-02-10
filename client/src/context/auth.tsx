@@ -67,6 +67,8 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
                 dispatch("STOP_LOADING");
             }
         }
+
+        loadUser();
     }, []);
     return (
         <DispatchContext.Provider value={dispatch}>

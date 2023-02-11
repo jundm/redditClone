@@ -1,11 +1,14 @@
-import {Router, Request, Response} from "express";
+import {Router, Request, Response, NextFunction} from "express";
 import {isEmpty} from "class-validator";
+import multer, {FileFilterCallback} from "multer";
+import path from "path";
 import userMiddleware from "@middlewares/user";
 import authMiddleware from "@middlewares/auth";
 import Sub from "@entities/Sub";
 import {AppDataSource} from "@data-source";
 import User from "@entities/User";
 import Post from "@entities/Post";
+import {makeId} from "@utils/helpers";
 
 const getSub = async (req: Request, res: Response) => {
     const name = req.params.name;
@@ -13,7 +16,7 @@ const getSub = async (req: Request, res: Response) => {
         const sub = await Sub.findOneByOrFail({name});
         return res.json(sub);
     } catch (error) {
-        return res.status(404).json({error:"커뮤니티를 찾을 수 없습니다."})
+        return res.status(404).json({error: "커뮤니티를 찾을 수 없습니다."});
     }
 };
 const createSubs = async (req: Request, res: Response, next: any) => {
@@ -75,10 +78,47 @@ const topSubs = async (req: Request, res: Response) => {
     }
 };
 
+const ownSub = async (req: Request, res: Response, next: NextFunction) => {
+    const user: User = res.locals.user;
+    try {
+        const sub = await Sub.findOneOrFail({where: {name: req.params.name}});
+        if (sub.username !== user.username) {
+            return res
+                .status(403)
+                .json({error: "이 커뮤니티를 소유하고 있지 않습니다."});
+        }
+        res.locals.sub = sub;
+        next();
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({error: "문제가 발생했습니다."});
+    }
+};
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: "public/images",
+        filename: (_, file, callback) => {
+            const name = makeId(10);
+            callback(null, name + path.extname(file.originalname));
+        },
+    }),
+    fileFilter: (_, file: any, callback: FileFilterCallback) => {
+        if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+            callback(null, true);
+        } else {
+            callback(new Error("이미지가 아닙니다."));
+        }
+    },
+});
+
+
+
 const router = Router();
 
 router.get("/:name", userMiddleware, getSub);
 router.post("/", userMiddleware, authMiddleware, createSubs);
 router.get("/sub/topSubs", topSubs);
+router.post("/:name/upload", userMiddleware, authMiddleware, ownSub, upload.single("file"), uploadSubImage);
 
 export default router;

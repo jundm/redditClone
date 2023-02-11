@@ -1,14 +1,17 @@
-import React from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {useRouter} from "next/router";
 import useSWR from "swr";
 import Image from 'next/image';
+import {useAuthState} from "@context/auth";
 
 interface SubProps {
 
 }
 
 const Sub = () => {
+    const [ownSub, setOwnSub] = useState(false);
+    const {authenticated, user} = useAuthState();
     const fetcher = async (url: string) => {
         try {
             const res = await axios.get(url);
@@ -17,14 +20,47 @@ const Sub = () => {
             throw error.response.data;
         }
     };
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
     const subName = router.query.sub;
-    const {data: sub, error} = useSWR(subName ? `/subs/${subName}` : null,fetcher);
-    console.log(sub,'sub');
+    const {data: sub, error} = useSWR(subName ? `/subs/${subName}` : null, fetcher);
+    console.log(sub, 'sub');
+
+    useEffect(() => {
+        if (!sub || !user) return;
+        setOwnSub(authenticated && user.username === sub.username);
+    }, [sub]);
+    const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files === null) return;
+        const file = event.target.files[0];
+        console.log(file, 'file');
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', fileInputRef.current!.name);
+
+        try {
+            await axios.post(`/subs/${sub.name}/upload`, formData, {
+                headers: {"Context-Type": "multipart/form-data"}
+            });
+        } catch (error) {
+            console.error(error);
+        }
+
+
+    };
+    const openFileInput = (type: string) => {
+        const fileInput = fileInputRef.current;
+        if (fileInput) {
+            fileInput.name = type;
+            fileInput.click();
+        }
+    };
     return (
         <>
             {sub &&
                 <>
+                    <input type="file" hidden={true} ref={fileInputRef} onChange={uploadImage}/>
                     <div>
                         {/* 배너 이미지 */}
                         <div className="bg-gray-400">
@@ -37,6 +73,7 @@ const Sub = () => {
                                         backgroundSize: 'cover',
                                         backgroundPosition: 'center',
                                     }}
+                                    onClick={() => openFileInput('banner')}
                                 >
                                 </div>
                             ) : (
@@ -55,6 +92,7 @@ const Sub = () => {
                                             width={70}
                                             height={70}
                                             className="rounded-full"
+                                            onClick={() => openFileInput('image')}
                                         />
                                     )}
                                 </div>

@@ -133,7 +133,7 @@ const uploadSubImage = async (req: Request, res: Response) => {
             // 새로운 파일 이름을 Urn 으로 넣어줍니다.
             sub.imageUrn = req.file?.filename || "";
         } else if (type === "banner") {
-            oldImageUrn = sub.imageUrn || "";
+            oldImageUrn = sub.bannerUrn || "";
             sub.bannerUrn = req.file?.filename || "";
         }
         await sub.save();

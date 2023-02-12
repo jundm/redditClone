@@ -6,6 +6,7 @@ import morgan from "morgan";
 import {AppDataSource} from "@data-source";
 import authRoutes from '@routes/auth';
 import subRoutes from '@routes/subs';
+import postRoutes from '@routes/posts';
 
 dotenv.config();
 const app = express();
@@ -23,6 +24,7 @@ app.use(cookieParser());
 app.use(express.static("public"));
 app.use('/api/auth', authRoutes);
 app.use('/api/subs', subRoutes);
+app.use('/api/post', postRoutes);
 
 app.get("/", (_, res) => res.send("running"));
 

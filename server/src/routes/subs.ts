@@ -2,6 +2,7 @@ import {Router, Request, Response, NextFunction} from "express";
 import {isEmpty} from "class-validator";
 import multer, {FileFilterCallback} from "multer";
 import path from "path";
+import {unlinkSync} from "fs";
 import userMiddleware from "@middlewares/user";
 import authMiddleware from "@middlewares/auth";
 import Sub from "@entities/Sub";
@@ -9,12 +10,22 @@ import {AppDataSource} from "@data-source";
 import User from "@entities/User";
 import Post from "@entities/Post";
 import {makeId} from "@utils/helpers";
-import {unlinkSync} from "fs";
 
 const getSub = async (req: Request, res: Response) => {
     const name = req.params.name;
     try {
         const sub = await Sub.findOneByOrFail({name});
+        // 포스트를 생성한 후에 해당 sub에 속하는 포스트 정보들을 넣어주기
+        const posts = await Post.find({
+            where: {subName: sub.name},
+            order: {createdAt: "DESC"},
+            relations: ["comments", "votes"]
+        });
+        sub.posts = posts;
+        if (res.locals.user) {
+            sub.posts.forEach((p) => p.setUserVote(res.locals.user));
+        }
+        console.log(sub,'suv');
         return res.json(sub);
     } catch (error) {
         return res.status(404).json({error: "커뮤니티를 찾을 수 없습니다."});

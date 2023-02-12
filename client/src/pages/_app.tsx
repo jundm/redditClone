@@ -1,6 +1,7 @@
 import React from "react";
 import type {AppProps} from 'next/app';
 import axios from "axios";
+import Head from "next/head";
 import {useRouter} from "next/router";
 import {SWRConfig} from "swr";
 import '@styles/globals.css';
@@ -23,14 +24,21 @@ function MyApp({Component, pageProps}: AppProps) {
         }
     };
     return (
-        <SWRConfig value={{fetcher}}>
-            <AuthProvider>
-                {!authRoute && <NavBar/>}
-                <div className={authRoute ? "" : "pt-4"}>
-                    <Component {...pageProps} />
-                </div>
-            </AuthProvider>
-        </SWRConfig>
+        <>
+            <Head>
+                <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
+                        integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc"
+                        crossOrigin="anonymous"/>
+            </Head>
+            <SWRConfig value={{fetcher}}>
+                <AuthProvider>
+                    {!authRoute && <NavBar/>}
+                    <div className={authRoute ? "" : "pt-4"}>
+                        <Component {...pageProps} />
+                    </div>
+                </AuthProvider>
+            </SWRConfig>
+        </>
     );
 }
 

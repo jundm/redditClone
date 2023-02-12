@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use(express.static("public"));
 app.use('/api/auth', authRoutes);
 app.use('/api/subs', subRoutes);
-app.use('/api/post', postRoutes);
+app.use('/api/posts', postRoutes);
 
 app.get("/", (_, res) => res.send("running"));
 
